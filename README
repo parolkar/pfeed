@@ -34,6 +34,11 @@ A Feed is logically composed of
 
 
 
+# Installation
+git submodule add git://github.com/parolkar/pfeed.git vendor/plugins/pfeed
+
+
+
 
 Example
 =======
