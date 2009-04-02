@@ -14,9 +14,21 @@ class PfeedItem < ActiveRecord::Base
      @participant = nil
      @participant = args_supplied_to_method[0] if args_supplied_to_method &&  args_supplied_to_method.length >= 1 && args_supplied_to_method[0].class.superclass.to_s == "ActiveRecord::Base"
        
+     pfeed_class_name = "#{ar_obj.class.to_s.underscore}_#{method_name_in_past_tense}".camelize # may be I could use .classify
+     pfeed_class_name = "Pfeeds::"+pfeed_class_name
+     contstructor_options = { :originator_id => @originator.id , :originator_type => @originator.class.to_s , :participant_id => (@participant ? @participant.id : nil) , :participant_type => (@participant ? @participant.class.to_s : nil) } # there is a reason why I didnt use {:originator => originator} , if originator is new record it might get saved here un intentionally
      
-     p_item = Pfeeds::ProfileUpdated.new({:originator_id => @originator.id , :originator_type => @originator.class.to_s , :participant_id => @participant.id , :participant_type => @participant.class.to_s}) # there is a reason why I didnt use {:originator => originator} , if originator is new record it might get saved here un intentionally
+       
+     p_item =  nil
+     begin
+       p_item =  pfeed_class_name.constantize.new(contstructor_options) 
+     rescue NameError
+       puts "could not find class #{pfeed_class_name} , hence using default Pfeed"
+       p_item = PfeedItem.new(contstructor_options) 
+     end   
+     
      p_item.save
+     #p_item.deliver
      
   end  
   def accessible?
