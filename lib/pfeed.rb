@@ -22,13 +22,16 @@ module ParolkarInnovationLab
              module ::ParolkarInnovationLab::SocialNet::PfeedTemp::#{self.to_s} 
               def #{method_to_define}(*a, &b)
                 returned_result = #{method_to_be_called}(*a , &b)
-                puts "#{ParolkarInnovationLab::SocialNet::PfeedUtils.attempt_pass_tense(method)}"
+                method_name_in_past_tense = "#{ParolkarInnovationLab::SocialNet::PfeedUtils.attempt_pass_tense(method)}"
+                PfeedItem.log(self,"#{method_name}",method_name_in_past_tense,returned_result,*a,&b) 
                 returned_result
               end
              end    
           ] 
             
         }
+        
+        #TODO : Pfeed.log(self,"#{method_name}",method_name_in_past_tense,returned_result,*a,*b)  : this is to be done in a different thread in bg to boost performance & also needs exception handling such that parent call never breaks
         
         include "::ParolkarInnovationLab::SocialNet::PfeedTemp::#{self.to_s}".constantize # why this? because "define_method((method + '_with_pfeed' + symbol).to_sym) do |*a , &b|" generates syntax error in ruby < 1.8.7 
         
@@ -46,7 +49,6 @@ module ParolkarInnovationLab
     end  
     module InstanceMethods
     
-            
       private
         #let private methods come here
     end

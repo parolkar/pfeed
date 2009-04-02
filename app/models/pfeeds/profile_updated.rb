@@ -1,4 +1,4 @@
-class Pfeeds::ProfileUpdated < Pfeed
+class Pfeeds::ProfileUpdated < PfeedItem
 
 # override things here for templates
 
