@@ -18,40 +18,24 @@ module ParolkarInnovationLab
         method_name_array.each { |method_name|
           method, symbol = method_name.to_s.split /(\!|\?)/
           symbol = '' if symbol.nil?
-          # Defining method for chaining
-          #define_method((method + '_with_pfeed' + symbol).to_sym) do |*a , &b|
-          #  returned_result = send(method + '_without_pfeed' + symbol,*a , &b)
-          #  #puts "From pfeed: #{self.class.to_s}dothisWith#{a[0].class.to_s}"
-          # puts "#{ParolkarInnovationLab::SocialNet::PfeedUtils.attempt_pass_tense(method)}"
-          #  returned_result
-          #end # End of method definition
-          
+                    
           method_to_define = method + '_with_pfeed' + symbol
           method_to_be_called = method + '_without_pfeed' + symbol
-          #self.instance_eval do
-            
-            #define_method((method_to_define).to_sym) do
-            #  puts "from pfreeds"
-            #end
-            eval %[
-               puts "#{self.to_s+"   "+method_to_define}"
+          eval %[
+               
+             module ::ParolkarInnovationLab::SocialNet::#{self.to_s} 
               def #{method_to_define}(*a, &b)
                 returned_result = #{method_to_be_called}(*a , &b)
                 puts "#{ParolkarInnovationLab::SocialNet::PfeedUtils.attempt_pass_tense(method)}"
                 returned_result
               end
-            ],self.pfeed_create_block.binding
-          #end
-          #self.instance_eval %[
-          #  def #{method_to_define}(*a, &b)
-          #    returned_result = #{method_to_be_called}(*a , &b)
-          #    puts "#{ParolkarInnovationLab::SocialNet::PfeedUtils.attempt_pass_tense(method)}"
-          #    returned_result
-          #  end
-          #]
+             end    
+          ] 
+         
           
+          include "::ParolkarInnovationLab::SocialNet::#{self.to_s}".constantize # why this? because "define_method((method + '_with_pfeed' + symbol).to_sym) do |*a , &b|" generates syntax error in ruby < 1.8.7 
           
-          
+                
           alias_method_chain (method + symbol), :pfeed
           }
        
@@ -61,7 +45,7 @@ module ParolkarInnovationLab
     
     module InstanceMethods
     
-     
+      
       
       private
         #let private methods come here
