@@ -1,6 +1,8 @@
 Pfeed
 ===============
 
+NOTE: This is very much a work in progress, no good usecase yet
+
 You need Pfeed when you are creating extensible logs or status / activity updates 
 
 
@@ -18,20 +20,6 @@ OR
 Imagine you are building an app like facebook and you want to capture all activity user is performing and display to it to her friends/group member/admin , Its a whole new feature whose implementation will force you to dig into design of your app and see where all the logs get generated and then to whom all the logs are going to be published.
 
 What if I give you a generalized information model which will allow you to create such feature by keeping it completely isolated from your existing logic? and What if it is scalable enough
-
-Ok so what's a generalized information model of a feed item?
-
-A Feed is logically composed of
-
-   1. Originator (User /System /Admin ) : Entity which originated this feed item
-   2. Participant Entity(s) : Entity(ies) which are involved in activity (Typically in social networking space these are Friend[User], Event, Group)
-   3. Time : When was the item created
-   4. Audience : This determines , Who will get this feed item (Single User/ Neighbors [with in 1 KM] / Group Members / Followers ).
-   5. Expiry : Time when the item becomes irrelevant in the system
-   6. Title Template : This is a text template which uses originator & participants information to form one line title.There can be different template for different audience
-   7. Interaction Template : This is a view that renders interaction area of the feed item
-  
-
 
 
 # Installation
