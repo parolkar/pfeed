@@ -1,0 +1,7 @@
+<div class="pfeed_container">
+  <%
+    feed_output = nil
+    feed_output = render(:partial => "/pfeeds/#{pfeed.view_template_name}", :object => pfeed)
+  %>
+  <%= feed_output %>
+</div>
