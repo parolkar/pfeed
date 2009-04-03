@@ -6,6 +6,8 @@ class PfeedItem < ActiveRecord::Base
    
   belongs_to :originator, :polymorphic => true
   belongs_to :participant, :polymorphic => true
+
+  has_many :pfeed_deliveries
   
   def self.log(ar_obj,method_name,method_name_in_past_tense,returned_result,*args_supplied_to_method,&block_supplied_to_method)
      puts "#{ar_obj.class.to_s},#{method_name},#{method_name_in_past_tense},#{returned_result},#{args_supplied_to_method.length}"
@@ -28,9 +30,36 @@ class PfeedItem < ActiveRecord::Base
      end   
      
      p_item.save
-     #p_item.deliver
+     puts "Trying to deliver to #{ar_obj}  #{ar_obj.pfeed_audience_hash[method_name.to_sym]}"
+     p_item.deliver(ar_obj,ar_obj.pfeed_audience_hash[method_name.to_sym])
      
   end  
+
+  def deliver(ar_obj,method_name_arr)
+    all_receivers = Array.new
+
+    method_name_arr.each { |method_name|
+      result_obj = ar_obj.send(method_name)
+      if result_obj.is_a?(Array)
+         result_obj.each { |result_ar_obj| all_receivers.push(result_ar_obj) if (result_ar_obj.is_pfeed_receiver && !all_receivers.include?(result_ar_obj))}
+      else
+         all_receivers.push(result_obj) if (result_obj.is_pfeed_receiver && !all_receivers.include?(result_obj))
+      end	
+
+    }  
+
+    all_receivers.each { |r_obj|
+      
+      delivery = PfeedDelivery.new
+      
+      if ! r_obj.new_record?
+        delivery.pfeed_item = self
+        delivery.pfeed_receiver = r_obj
+        delivery.save!
+      end
+    }
+
+  end
   def accessible?
     true 
   end
