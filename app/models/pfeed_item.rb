@@ -10,7 +10,7 @@ class PfeedItem < ActiveRecord::Base
   has_many :pfeed_deliveries
   
   def self.log(ar_obj,method_name,method_name_in_past_tense,returned_result,*args_supplied_to_method,&block_supplied_to_method)
-     puts "#{ar_obj.class.to_s},#{method_name},#{method_name_in_past_tense},#{returned_result},#{args_supplied_to_method.length}"
+     #puts "#{ar_obj.class.to_s},#{method_name},#{method_name_in_past_tense},#{returned_result},#{args_supplied_to_method.length}"
      
      @originator = ar_obj
      @participant = nil
@@ -23,6 +23,7 @@ class PfeedItem < ActiveRecord::Base
        
      p_item =  nil
      begin
+       #puts "Attempting to create object of  #{pfeed_class_name} "
        p_item =  pfeed_class_name.constantize.new(contstructor_options) 
      rescue NameError
        #puts "could not find class #{pfeed_class_name} , hence using default Pfeed"
@@ -33,7 +34,7 @@ class PfeedItem < ActiveRecord::Base
      
      
      p_item.save
-     puts "Trying to deliver to #{ar_obj}  #{ar_obj.pfeed_audience_hash[method_name.to_sym]}"
+     #puts "Trying to deliver to #{ar_obj}  #{ar_obj.pfeed_audience_hash[method_name.to_sym]}"
      p_item.deliver(ar_obj,ar_obj.pfeed_audience_hash[method_name.to_sym])
      
   end  
@@ -67,7 +68,7 @@ class PfeedItem < ActiveRecord::Base
     true 
   end
   def view_template_name 
-    "#{self.class.to_s.underscore}"
+    "#{self.class.to_s.underscore}".split("/").last
   end
   
   def audience
