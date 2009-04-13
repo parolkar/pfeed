@@ -51,11 +51,11 @@ And you perform regular operations, like this
 </pre>
 your application now emits feed without any other additional piece of code, and feed will look like this in view. 
 <pre><code>
- parolkar sold item at 2009-03-11 11:01:28 UTC 
- parolkar bought item at 2009-03-11 11:01:28 UTC
- foo found friends at 2009-03-11 11:01:28 UTC
- foo updated attribute nick name at 2009-03-11 11:01:29 UTC 
- alice bought item at 2009-03-11 11:02:28 UTC
+ parolkar sold item about 6 minutes ago
+ parolkar bought item about 4 minutes ago
+ foo found friends about 2 minutes ago
+ foo updated attribute nick name about 2 minutes ago
+ alice bought item about 2 minutes ago
 </code></pre>
 
 Isn't it magical? that it guesses the identity of model object (parolkar or foo in this case) and methods being called are treated as verbs to form a simple past tense.  
