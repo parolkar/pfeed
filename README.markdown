@@ -27,7 +27,7 @@ Lets assume you have a model that looks like
 </code>
 </pre>
 
-Now lets add two lines 
+Now lets add two lines at bottom of model definition 
 
 <pre>
 <code>
@@ -82,6 +82,9 @@ What if I give you a generalized information model which will allow you to creat
 
 
 ## Installation
+
+Prior to installing this , make sure you have inflectionist plugin installed (http://github.com/parolkar/inflectionist)
+
 git submodule add git://github.com/parolkar/pfeed.git vendor/plugins/pfeed  
 rake pfeed:setup  
 
