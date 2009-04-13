@@ -1,10 +1,10 @@
 Pfeed
-===============
+======
 
 You need Pfeed when you want to automagically create fancy logs / activity updates in your rails app. 
 
 
-What's so magical here?
+### What's so magical here?
 Lets assume you have a model that looks like
 
 <pre>
@@ -29,13 +29,16 @@ Lets assume you have a model that looks like
 
 Now lets add two lines 
 
+<pre>
 <code>
  emits_pfeeds :on => [:buy,:sell,:find_friends,:update_attribute] , :for => [:itself ,:all_in_its_class, :friends]
  receives_pfeed
 </code>
+</pre>
 
 And you perform regular operations, like this
 
+<pre>
 <code>
  u1 = User.first
  u1.buy(10)
@@ -45,16 +48,17 @@ And you perform regular operations, like this
  u2.update_attribute(:nick_name, "alice")
  u2.buy (1)
 </code>
+</pre>
 
 your application now emits feed without any other additional piece of code, and feed will look like this in view.
 
-<code>
+<pre><code>
  parolkar sold item at 2009-03-11 11:01:28 UTC 
  parolkar bought item at 2009-03-11 11:01:28 UTC
  foo found friends at 2009-03-11 11:01:28 UTC
  foo updated attribute nick name at 2009-03-11 11:01:29 UTC 
  alice bought item at 2009-03-11 11:02:28 UTC
-</code>
+</code></pre>
 
 Isn't it magical? that it guesses the identity of model object (parolkar or foo in this case) and methods being called are treated as verbs to form a simple past tense.
 
@@ -63,7 +67,7 @@ Even more, each feed can be customized and skinned the way you want. You can eas
   
 
 
-h1.More Details
+## More Details
 
 What is feed?
 Feed is the collection of activity logs which is generated while you perform actions on model objects.
@@ -84,10 +88,9 @@ What if I give you a generalized information model which will allow you to creat
 
 
 
-# Installation
+## Installation
 git submodule add git://github.com/parolkar/pfeed.git vendor/plugins/pfeed
 rake pfeed:setup
-
 
 
 
