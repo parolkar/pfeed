@@ -84,7 +84,7 @@ class PfeedItem < ActiveRecord::Base
   end
   
   def guess_identification(ar_obj)
-    possible_attributes = ["username","name","company_name","first_name","last_name","login_name","login_id","given_name","nick_name","nick","short_name"]
+    possible_attributes = ["username","login","name","company_name","first_name","last_name","login_name","login_id","given_name","nick_name","nick","short_name"]
     
     possible_attributes = self.data[:config][:identifications] + possible_attributes if self.data[:config] && self.data[:config][:identifications] && self.data[:config][:identifications].is_a?(Array)
     matched_name = ar_obj.attribute_names & possible_attributes # intersection of two sets
