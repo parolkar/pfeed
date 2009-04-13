@@ -7,24 +7,25 @@ You need Pfeed when you want to automagically create fancy logs / activity updat
 What's so magical here?
 Lets assume you have a model that looks like
 
+<pre>
 <code>
-class User < ActiveRecord::Base
- has_many :friends
- has_one  :company
-
- def buy(x)
+ class User < ActiveRecord::Base
+   has_many :friends
+   has_one  :company
+   def buy(x)
     ...
+   end
+
+   def sell(x)
+    ...
+   end
+  
+   def find_friends
+    ...
+   end  
  end
-
- def sell(x)
-    ...
- end
-
- def find_friends
-    ...
- end  
-end
 </code>
+</pre>
 
 Now lets add two lines 
 
