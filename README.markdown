@@ -49,9 +49,7 @@ And you perform regular operations, like this
  u2.buy (1)
 </code>
 </pre>
-
-your application now emits feed without any other additional piece of code, and feed will look like this in view.
-
+your application now emits feed without any other additional piece of code, and feed will look like this in view. 
 <pre><code>
  parolkar sold item at 2009-03-11 11:01:28 UTC 
  parolkar bought item at 2009-03-11 11:01:28 UTC
@@ -60,38 +58,32 @@ your application now emits feed without any other additional piece of code, and 
  alice bought item at 2009-03-11 11:02:28 UTC
 </code></pre>
 
-Isn't it magical? that it guesses the identity of model object (parolkar or foo in this case) and methods being called are treated as verbs to form a simple past tense.
+Isn't it magical? that it guesses the identity of model object (parolkar or foo in this case) and methods being called are treated as verbs to form a simple past tense.  
 
-Even more, each feed can be customized and skinned the way you want. You can easily extend the functionality to suit your requirements.
-
-  
+Even more, each feed can be customized and skinned the way you want. You can easily extend the functionality to suit your requirements.  
 
 
 ## More Details
 
-What is feed?
+*What is feed?*
 Feed is the collection of activity logs which is generated while you perform actions on model objects.
 
-Whats so special?, Why should I bother about it?
+*Whats so special?, Why should I bother about it?*  
 
-Imagine you want to create admin console for your app to monitor functional activities in your web apps ,i.e how users are using different parts of application. You will need to think of mechanism to capture the logs and then display in some logical manner.
+Imagine you want to create admin console for your app to monitor functional activities in your web apps ,i.e how users are using different parts of application. You will need to think of mechanism to capture the logs and then display in some logical manner.  
 
-OR 
+OR  
 
-Imagine you are building an app like facebook and you want to capture all activity user is performing and display it to her friends/group member/admin , Its a whole new feature whose implementation will force you to dig into design of your app and see where all the logs get generated and then to whom all the logs are going to be published.
+Imagine you are building an app like facebook and you want to capture all activity user is performing and display it to her friends/group member/admin , Its a whole new feature whose implementation will force you to dig into design of your app and see where all the logs get generated and then to whom all the logs are going to be published.  
 
-What if I give you a generalized information model which will allow you to create such feature by keeping it completely isolated from your existing logic? and What if it is really scalable enough?
+What if I give you a generalized information model which will allow you to create such feature by keeping it completely isolated from your existing logic? and What if it is really scalable enough?  
 
-
-(more content to come here...)
-
-
+(more content to come here...)  
 
 
 ## Installation
-git submodule add git://github.com/parolkar/pfeed.git vendor/plugins/pfeed
-rake pfeed:setup
-
+git submodule add git://github.com/parolkar/pfeed.git vendor/plugins/pfeed  
+rake pfeed:setup  
 
 
 
