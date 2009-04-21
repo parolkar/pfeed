@@ -7,7 +7,7 @@ class PfeedItem < ActiveRecord::Base
   belongs_to :originator, :polymorphic => true
   belongs_to :participant, :polymorphic => true
 
-  has_many :pfeed_deliveries
+  has_many :pfeed_deliveries, :dependent => :destroy 
   
   def self.log(ar_obj,method_name,method_name_in_past_tense,returned_result,*args_supplied_to_method,&block_supplied_to_method)
      #puts "#{ar_obj.class.to_s},#{method_name},#{method_name_in_past_tense},#{returned_result},#{args_supplied_to_method.length}"

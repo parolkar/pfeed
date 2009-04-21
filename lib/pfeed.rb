@@ -47,11 +47,14 @@ module ParolkarInnovationLab
           symbol = '' if symbol.nil?
           alias_method_chain (method + symbol), :pfeed
         }
+         
+        has_many :pfeed_items , :as => :originator , :dependent => :destroy   #when originator is deleted the pfeed_items gets destroyed too
+         
           
       end
      
       def receives_pfeed
-        has_many :pfeed_deliveries , :as => :pfeed_receiver
+        has_many :pfeed_deliveries , :as => :pfeed_receiver 
         has_many :pfeed_inbox, :class_name => 'PfeedItem', :foreign_key => "pfeed_item_id" , :through => :pfeed_deliveries , :source => :pfeed_item
 
 	write_inheritable_attribute(:is_pfeed_receiver,true)
