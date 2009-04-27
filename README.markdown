@@ -62,6 +62,7 @@ Isn't it magical? that it guesses the identity of model object (parolkar or foo 
 
 Even more, each feed can be customized and skinned the way you want. You can easily extend the functionality to suit your requirements.  
 
+If all this excites you, check out the tutorials [here](http://wiki.github.com/parolkar/pfeed "pfeed's Wiki")
 
 ## More Details
 
@@ -83,10 +84,12 @@ What if I give you a generalized information model which will allow you to creat
 
 ## Installation
 
-Prior to installing this , make sure you have inflectionist plugin installed (http://github.com/parolkar/inflectionist)
-
-git submodule add git://github.com/parolkar/pfeed.git vendor/plugins/pfeed  
-rake pfeed:setup  
+<pre>
+<code>	
+ $ script/plugin install git://github.com/parolkar/pfeed.git
+ $ rake pfeed:setup 
+</code>
+</pre> 
 
 
 
