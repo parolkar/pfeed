@@ -62,7 +62,7 @@ Isn't it magical? that it guesses the identity of model object (parolkar or foo 
 
 Even more, each feed can be customized and skinned the way you want. You can easily extend the functionality to suit your requirements.  
 
-If all this excites you, check out the tutorials [here](http://wiki.github.com/parolkar/pfeed "pfeed's Wiki")
+If all this excites you, check out the tutorials [here](http://wiki.github.com/parolkar/pfeed "pfeed's Wiki") or explore some more advanced techniques [here](http://wiki.github.com/parolkar/pfeed/customizing-the-pfeed-item "pfeed customisation techniques") 
 
 ## More Details
 
