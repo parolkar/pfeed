@@ -49,9 +49,9 @@ class PfeedItem < ActiveRecord::Base
     method_name_arr.each { |method_name|
       result_obj = ar_obj.send(method_name)
       if result_obj.is_a?(Array)
-         result_obj.each { |result_ar_obj| all_receivers.push(result_ar_obj) if (result_ar_obj.is_pfeed_receiver && !all_receivers.include?(result_ar_obj))}
+         result_obj.each { |result_ar_obj| all_receivers.push(result_ar_obj) if (result_obj != nil && result_ar_obj.is_pfeed_receiver && !all_receivers.include?(result_ar_obj))}
       else
-         all_receivers.push(result_obj) if (result_obj.is_pfeed_receiver && !all_receivers.include?(result_obj))
+         all_receivers.push(result_obj) if (result_obj != nil && result_obj.is_pfeed_receiver && !all_receivers.include?(result_obj))
       end	
 
     }  
