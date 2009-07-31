@@ -1,7 +1,13 @@
 <div class="pfeed_container">
   <%
     feed_output = nil
+    begin
     feed_output = render(:partial => "pfeeds/#{pfeed.view_template_name}", :object => pfeed)
+    rescue
+    feed_output = "<!-- some error occured in #{pfeed.view_template_name} -->"
+
+    end
+
   %>
   <%= feed_output %>
 </div>
