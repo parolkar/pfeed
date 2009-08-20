@@ -39,9 +39,19 @@ class PfeedItem < ActiveRecord::Base
 
       p_item.save
       #puts "Trying to deliver to #{ar_obj}  #{ar_obj.pfeed_audience_hash[method_name.to_sym]}"
-      p_item.deliver(ar_obj,ar_obj.pfeed_audience_hash[method_name.to_sym])
-               
+      p_item.attempt_delivery(ar_obj,ar_obj.pfeed_audience_hash[method_name.to_sym])   # attempting the delivery of the feed
+
   end  
+  
+  def attempt_delivery (ar_obj,method_name_arr)
+    if (defined? Delayed) == "constant" && (respond_to? :send_later) == true   #this means Delayed_job exists , so make use of asynchronous delivery of pfeed
+      send_later(:deliver,ar_obj,method_name_arr)  
+    else  # regular instant delivery
+      send(:deliver,ar_obj,method_name_arr)    
+    end
+
+
+  end
 
   def deliver(ar_obj,method_name_arr)
     all_receivers = Array.new

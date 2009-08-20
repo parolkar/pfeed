@@ -1,7 +1,7 @@
 Pfeed
 ======
 
-You need Pfeed when you want to automagically create fancy logs / activity updates in your rails app. 
+You need Pfeed when you want to automagically create fancy logs / activity updates in your rails app, asynchronously. 
 
 
 ### What's so magical here?
@@ -62,7 +62,14 @@ Isn't it magical? that it guesses the identity of model object (parolkar or foo 
 
 Even more, each feed can be customized and skinned the way you want. You can easily extend the functionality to suit your requirements.  
 
-If all this excites you, check out the tutorials [here](http://wiki.github.com/parolkar/pfeed "pfeed's Wiki") or explore some more advanced techniques [here](http://wiki.github.com/parolkar/pfeed/customizing-the-pfeed-item "pfeed customisation techniques") 
+If all this excites you, check out the tutorials [here](http://wiki.github.com/parolkar/pfeed "pfeed's Wiki") or explore some more advanced techniques [here](http://wiki.github.com/parolkar/pfeed/customizing-the-pfeed-item "pfeed customisation techniques")            
+
+
+## Performance
+
+*How efficient is feed generation and delivery?* 
+
+  If your app has mechanisms for asynchronous processing, like delayed_job , pfeed plugin will automatically figure out  how to schedule the delivery in the queue so that your request loop remains efficient and workers can perform deliveries. [Find out more](http://wiki.github.com/parolkar/pfeed/pfeed-delivery-as-background-job "pfeed delivery as background job")  
 
 ## More Details
 
