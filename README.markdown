@@ -31,7 +31,7 @@ Now lets add two lines at bottom of model definition
 
 <pre>
 <code>
- emits_pfeeds :on => [:buy,:sell,:find_friends,:update_attribute] , :for => [:itself , :friends]   # Note: if feed needs to be received to all users , you could use :for => [:all_in_its_class]
+ emits_pfeeds :on => [:buy,:sell,:find_friends,:update_attribute] , :for => [:itself , :friends]   # Note: if feed needs to be received by all users , you could use :for => [:all_in_its_class]
  receives_pfeed
 </code>
 </pre>
