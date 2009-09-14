@@ -78,7 +78,14 @@ module ParolkarInnovationLab
       end
       def all_in_its_class
         self.class.find :all
+      end    
+      
+      def pfeed_recent_item_timestamp  
+        self.pfeed_deliveries.last.created_at
+      rescue
+        nil
       end
+      
       private
         #let private methods come here
     end
