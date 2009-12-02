@@ -11,10 +11,10 @@ module ParolkarInnovationLab
       def emits_pfeeds arg_hash # {:on => [] , :for => [:itself , :all_in_its_class]}
         include ParolkarInnovationLab::SocialNet::InstanceMethods
  
-        method_name_array = arg_hash[:on]
+        method_name_array = [*arg_hash[:on]]
         class_inheritable_hash :pfeed_audience_hash
         
-        method_name_array.each{|method_name| register_pfeed_audience(method_name,arg_hash[:for])  }
+        method_name_array.each{|method_name| register_pfeed_audience(method_name,[*arg_hash[:for]].compact)  }
 
         
 
