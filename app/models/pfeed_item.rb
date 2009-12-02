@@ -14,6 +14,18 @@ class PfeedItem < ActiveRecord::Base
   CUSTOM_CLASSES = {}
   def self.log(ar_obj,method_name,method_name_in_past_tense,returned_result,*args_supplied_to_method,&block_supplied_to_method)
      #puts "#{ar_obj.class.to_s},#{method_name},#{method_name_in_past_tense},#{returned_result},#{args_supplied_to_method.length}"
+
+    # optional :if => :test, or :unless => :test
+    if ar_obj.respond_to?(:pfeed_conditions_hash)
+      if (conds = ar_obj.pfeed_conditions_hash[method_name.to_sym])
+        if if_cond = conds[:if]
+          return unless ar_obj.send(if_cond)
+        end
+        if unless_cond = conds[:unless]
+          return if !ar_obj.send(unless_cond)
+        end
+      end
+    end
      
       temp_references = Hash.new
       temp_references[:originator] = ar_obj
@@ -55,7 +67,6 @@ class PfeedItem < ActiveRecord::Base
       p_item.save
       #puts "Trying to deliver to #{ar_obj}  #{ar_obj.pfeed_audience_hash[method_name.to_sym]}"
       p_item.attempt_delivery(ar_obj,ar_obj.pfeed_audience_hash[method_name.to_sym])   # attempting the delivery of the feed
-
   end  
   
   @@dj = (defined? Delayed) == "constant" && (instance_methods.include? 'send_later') #this means Delayed_job exists , so make use of asynchronous delivery of pfeed
