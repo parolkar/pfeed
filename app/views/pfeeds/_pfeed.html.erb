@@ -1,13 +1,11 @@
-<div class="pfeed_container">
-  <%
-    feed_output = nil
+<ul class="pfeed_container">
+  <li>
+  <%=
     begin
-    feed_output = render(:partial => "pfeeds/#{pfeed.view_template_name}", :object => pfeed)
+      render(:partial => "pfeeds/#{pfeed.view_template_name}", :object => pfeed)
     rescue
-    feed_output = "<!-- some error occured in #{pfeed.view_template_name} -->"
-
+      "<!-- error in #{pfeed.view_template_name}: #{$!.to_s.split("\n").join("-->\n<!--")} -->"
     end
-
   %>
-  <%= feed_output %>
-</div>
+  </li>
+</ul>
