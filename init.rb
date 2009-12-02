@@ -10,7 +10,9 @@ ActionController::Base.helper do
       :partial => "pfeeds/#{pfeed.view_template_name}.html.erb", :locals => {:object => pfeed})
   end
 
-  def pfeed_item_url pfeed_item
-    polymorphic_url pfeed_item.originator
+  def pfeed_item_url(pfeed_item)
+    # same as: polymorphic_url pfeed_item.originator
+    # but no need to query the database
+    send(pfeed_item.originator_type.underscore + '_url', pfeed_item.originator_id)
   end
 end
