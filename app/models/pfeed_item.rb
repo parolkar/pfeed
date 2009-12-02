@@ -11,6 +11,7 @@ class PfeedItem < ActiveRecord::Base
   
   attr_accessor :temp_references # this is an temporary Hash to hold references to temporary Objects 
   
+  CUSTOM_CLASSES = {}
   def self.log(ar_obj,method_name,method_name_in_past_tense,returned_result,*args_supplied_to_method,&block_supplied_to_method)
      #puts "#{ar_obj.class.to_s},#{method_name},#{method_name_in_past_tense},#{returned_result},#{args_supplied_to_method.length}"
      
@@ -20,19 +21,33 @@ class PfeedItem < ActiveRecord::Base
       temp_references[:participant] = args_supplied_to_method[0] if args_supplied_to_method &&  args_supplied_to_method.length >= 1 && args_supplied_to_method[0].class.superclass.to_s == "ActiveRecord::Base"
 
       pfeed_class_name = "#{ar_obj.class.to_s.underscore}_#{method_name_in_past_tense}".camelize # may be I could use .classify
-      pfeed_class_name = "Pfeeds::"+pfeed_class_name
       contstructor_options = { :originator_id => temp_references[:originator].id , :originator_type => temp_references[:originator].class.to_s , :participant_id => (temp_references[:participant] ? temp_references[:participant].id : nil) , :participant_type => (temp_references[:participant] ? temp_references[:participant].class.to_s : nil) } # there is a reason why I didnt use {:originator => temp_references[:originator]} , if originator is new record it might get saved here un intentionally
 
 
-      p_item =  nil
-      begin
-        #puts "Attempting to create object of  #{pfeed_class_name} "
-        p_item =  pfeed_class_name.constantize.new(contstructor_options) 
-        p_item.temp_references =  temp_references
-      rescue NameError
-        #puts "could not find class #{pfeed_class_name} , hence using default Pfeed"
-        p_item = PfeedItem.new(contstructor_options) 
-      end   
+      p_item = if (klass = CUSTOM_CLASSES[pfeed_class_name]).nil?
+        retried = false
+        begin
+          #puts "Attempting to create object of  #{pfeed_class_name} "
+          klass = pfeed_class_name.constantize
+          (CUSTOM_CLASSES[pfeed_class_name] = klass).new(
+            contstructor_options.merge(:temp_references => temp_references))
+        rescue NameError
+          unless retried
+            CUSTOM_CLASSES[pfeed_class_name] = false
+            retried = true
+            pfeed_class_name = "Pfeeds::"+pfeed_class_name
+            retry
+          end
+          #puts "could not find class #{pfeed_class_name} , hence using default Pfeed"
+          PfeedItem.new(contstructor_options) 
+        end   
+      else
+        if klass == false
+          PfeedItem.new(contstructor_options) 
+        else
+          klass.new(contstructor_options) 
+        end
+      end
 
       p_item.pack_data(method_name,method_name_in_past_tense,returned_result,*args_supplied_to_method,&block_supplied_to_method)
 
@@ -43,44 +58,41 @@ class PfeedItem < ActiveRecord::Base
 
   end  
   
+  @@dj = (defined? Delayed) == "constant" && (instance_methods.include? 'send_later') #this means Delayed_job exists , so make use of asynchronous delivery of pfeed
+
   def attempt_delivery (ar_obj,method_name_arr)
-    if (defined? Delayed) == "constant" && (respond_to? :send_later) == true   #this means Delayed_job exists , so make use of asynchronous delivery of pfeed
+    return if method_name_arr.empty?
+
+    if @@dj
       send_later(:deliver,ar_obj,method_name_arr)  
     else  # regular instant delivery
       send(:deliver,ar_obj,method_name_arr)    
     end
-
-
   end
 
   def deliver(ar_obj,method_name_arr)
-    all_receivers = Array.new
-
-    method_name_arr.each { |method_name|
-      result_obj = ar_obj.send(method_name)
-      if result_obj.is_a?(Array)
-         result_obj.each { |result_ar_obj| all_receivers.push(result_ar_obj) if (result_obj != nil && result_ar_obj.is_pfeed_receiver && !all_receivers.include?(result_ar_obj))}
-      else
-         all_receivers.push(result_obj) if (result_obj != nil && result_obj.is_pfeed_receiver && !all_receivers.include?(result_obj))
-      end	
-
-    }  
-
-    all_receivers.each { |r_obj|
-      
-      delivery = PfeedDelivery.new
-      
-      if ! r_obj.new_record?
-        delivery.pfeed_item = self
-        delivery.pfeed_receiver = r_obj
-        delivery.save!
-      end
-    }
-
+    method_name_arr.map { |method_name|
+      ar_obj.send(method_name)
+    }.flatten.uniq.map {|o| deliver_to(o) }.compact
   end
+
+  def deliver_to(result_obj)
+    return nil unless (result_obj != nil && result_obj.is_pfeed_receiver)
+
+    if !result_obj.new_record?
+      delivery = PfeedDelivery.new
+      delivery.pfeed_item = self
+      delivery.pfeed_receiver = result_obj
+      delivery.save!
+    end
+
+    return result_obj
+  end
+
   def accessible?
     true 
   end
+
   def view_template_name 
     "#{self.class.to_s.underscore}".split("/").last
   end
