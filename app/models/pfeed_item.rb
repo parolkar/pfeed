@@ -16,15 +16,10 @@ class PfeedItem < ActiveRecord::Base
      #puts "#{ar_obj.class.to_s},#{method_name},#{method_name_in_past_tense},#{returned_result},#{args_supplied_to_method.length}"
 
     # optional :if => :test, or :unless => :test
-    if ar_obj.respond_to?(:pfeed_conditions_hash)
-      if (conds = ar_obj.pfeed_conditions_hash[method_name.to_sym])
-        if if_cond = conds[:if]
-          return unless ar_obj.send(if_cond)
-        end
-        if unless_cond = conds[:unless]
-          return if !ar_obj.send(unless_cond)
-        end
-      end
+    if if_cond = ar_obj.pfeed_options[:if]
+      return unless ar_obj.send(if_cond)
+    elsif unless_cond = ar_obj.pfeed_options[:unless]
+      return if !ar_obj.send(unless_cond)
     end
      
       temp_references = Hash.new
@@ -115,24 +110,54 @@ class PfeedItem < ActiveRecord::Base
   def pack_data(method_name,method_name_in_past_tense,returned_result,*args_supplied_to_method,&block_supplied_to_method) 
     self.data = {} if ! self.data
     action_string = method_name_in_past_tense.humanize.downcase
-    hash_to_be_merged = {:action_string => action_string}
+    hash_to_be_merged = {:action_string => action_string, :originator_identity => guess_identification(originator)}
+
+    if current_user = Thread.current[:current_user]
+      hash_to_be_merged.merge!(:current_user_identity => guess_identification(current_user))
+    end
     
     self.data.merge!  hash_to_be_merged
   end
   
+  IDENTIFICATIONS = {}
   def guess_identification(ar_obj)
+    if identifier = ar_obj.respond_to?(:pfeed_options) && ar_obj.pfeed_options[:pfeed_identification]
+      return ar_obj.send(identifier)
+    end
+
+    if attribute = IDENTIFICATIONS[ar_obj.class]
+      if (identi = ar_obj.read_attribute(attribute)).blank?
+        identi = ar_obj.send(attribute) rescue nil
+      end
+      return identi if identi
+    end
+
     possible_attributes = ["username","login","name","company_name","first_name","last_name","login_name","login_id","given_name","nick_name","nick","short_name"]
     
     possible_attributes = self.data[:config][:identifications] + possible_attributes if self.data[:config] && self.data[:config][:identifications] && self.data[:config][:identifications].is_a?(Array)
     matched_name = ar_obj.attribute_names & possible_attributes # intersection of two sets
-    
+
     identi = nil
+    matched_name.each do |attribute|
+      result = ar_obj.read_attribute(attribute)
+      next unless result.present? && result.kind_of?(String)
+      IDENTIFICATIONS[ar_obj.class] = attribute
+      identi = result 
+      break
+    end
+
+    if identi.blank?
+      possible_attributes.each do |attribute|
+        next unless ar_obj.respond_to? attribute
+        result = ar_obj.send(attribute) rescue nil
+        next unless result.present? && result.kind_of?(String)
+        IDENTIFICATIONS[ar_obj.class] = attribute
+        identi = result 
+        break 
+      end
+    end
     
-    identi =  ar_obj.read_attribute(matched_name[0]) if identi == nil && matched_name.length > 0
-    identi =  "#{ar_obj.class.to_s}(\##{ar_obj.id})"  if identi == nil || identi.blank?
-    
-    return identi
-  rescue
-    return "UNKNOWN"  
+    identi =  "#{ar_obj.class.to_s}(\##{ar_obj.id})" if identi.blank?
+    identi
   end  
 end

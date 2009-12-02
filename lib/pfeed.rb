@@ -8,7 +8,8 @@ module ParolkarInnovationLab
     
     module ClassMethods
                   
-      def emits_pfeeds arg_hash # {:on => [] , :for => [:itself , :all_in_its_class], :if => :passes_test?}
+      def emits_pfeeds arg_hash # {:on => [] , :for => [:itself , :all_in_its_class], :identified_by => :name, :if => :passes_test?}
+        arg_hash.assert_valid_keys(:on,:for,:if,:unless,:identified_by)
         include ParolkarInnovationLab::SocialNet::InstanceMethods
  
         method_name_array = [*arg_hash[:on]]
@@ -16,10 +17,8 @@ module ParolkarInnovationLab
         
         method_name_array.each{|method_name| register_pfeed_audience(method_name,[*arg_hash[:for]].compact)  }
 
-        unless (cond_hash = arg_hash.slice(:if,:unless)).empty?
-          class_inheritable_hash :pfeed_conditions_hash
-          method_name_array.each{|method_name| register_pfeed_conditions(method_name,cond_hash) }
-        end
+        class_inheritable_hash :pfeed_options
+        write_inheritable_hash :pfeed_options, arg_hash.slice(:if,:unless,:identified_by)
 
         
 
@@ -66,17 +65,9 @@ module ParolkarInnovationLab
         class_inheritable_reader :is_pfeed_receiver
       end
     
-      def register_pfeed_methods(hash,method_name,value)
-         write_inheritable_hash(hash, { method_name.to_sym => value }) # this does a merge
-      end
-
-      def register_pfeed_conditions(method_name,conds)
-        register_pfeed_methods(:pfeed_conditions_hash ,method_name, conds)
-      end
-
       def register_pfeed_audience(method_name,audience_arr)
-        register_pfeed_methods(:pfeed_audience_hash ,method_name, audience_arr)
-      end 
+         write_inheritable_hash(:pfeed_audience_hash, { method_name.to_sym => audience_arr }) # this does a merge
+      end
     end
     
     module PfeedTemp
