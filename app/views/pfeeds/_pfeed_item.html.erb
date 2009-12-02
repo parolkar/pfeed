@@ -1,7 +1,3 @@
-<%= pfeed_item.guess_identification(pfeed_item.originator) %>
-<%= pfeed_item.data[:action_string] %>
-
-about <%= time_ago_in_words(pfeed_item.created_at) %> ago  
-
-
-
+<%= pfeed_item.guess_identification(pfeed_item.originator) -%>
+ <%= pfeed_item.data[:action_string] -%>
+ about <%= time_ago_in_words(pfeed_item.created_at) -%> ago  

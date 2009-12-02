@@ -1,11 +1,3 @@
-<ul class="pfeed_container">
-  <li>
-  <%=
-    begin
-      render(:partial => "pfeeds/#{pfeed.view_template_name}", :object => pfeed)
-    rescue
-      "<!-- error in #{pfeed.view_template_name}: #{$!.to_s.split("\n").join("-->\n<!--")} -->"
-    end
-  %>
-  </li>
-</ul>
+<li class="pfeed_container">
+  <%= pfeed_content(pfeed) %>
+</li>
