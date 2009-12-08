@@ -49,7 +49,7 @@ class PfeedItem < ActiveRecord::Base
           PfeedItem.new(contstructor_options) 
         end   
       else
-        if klass == false
+        if !klass
           PfeedItem.new(contstructor_options) 
         else
           klass.new(contstructor_options) 
