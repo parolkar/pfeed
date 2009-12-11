@@ -39,15 +39,16 @@ def load_schema
 
   ActiveRecord::Schema.define do
     create_table "emitters", :force => true do |t|
+      t.string 'name'
     end
       
     create_table "pfeed_items", :force => true do |t|
-      t.column "type", :string
-      t.column "originator_id", :integer
-      t.column "originator_type", :integer
-      t.column "participant_id", :integer
-      t.column "participant_type", :integer
-      t.text "data"
+      t.string  "type"
+      t.integer "originator_id"
+      t.string  "originator_type"
+      t.integer "participant_id"
+      t.string  "participant_type"
+      t.text    "data"
       t.datetime 'expiry'
       t.timestamps
     end
