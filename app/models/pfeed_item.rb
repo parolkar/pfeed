@@ -18,7 +18,7 @@ class PfeedItem < ActiveRecord::Base
     if if_cond = ar_obj.pfeed_options[:if]
       return unless ar_obj.send(if_cond)
     elsif unless_cond = ar_obj.pfeed_options[:unless]
-      return if !ar_obj.send(unless_cond)
+      return if ar_obj.send(unless_cond)
     end
 
     raise ArgumentError, "originator object must to be saved" if ar_obj.new_record?
@@ -60,7 +60,11 @@ class PfeedItem < ActiveRecord::Base
   end
 
   def deliver_to(result_obj)
-    return nil unless (result_obj != nil && result_obj.is_pfeed_receiver)
+    return nil unless result_obj != nil && begin
+        result_obj.is_pfeed_receiver
+      rescue NoMethodError
+        raise NoMethodError, "you must use the receives_pfeed macro for class: #{result_obj.class}"
+      end
 
     if !result_obj.new_record?
       delivery = PfeedDelivery.new
