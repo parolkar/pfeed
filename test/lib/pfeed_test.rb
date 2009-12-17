@@ -16,13 +16,15 @@ class Emitter < ActiveRecord::Base
   def unless_false; false end
   def unless_true_ping; end
   def unless_true; true end
+
+  receives_pfeed
 end
 
 context 'an emitter not satisfying an if or unless condition' do
   setup do
     Emitter.class_eval do
-      emits_pfeeds :on => :if_false_ping, :if => :if_false
-      emits_pfeeds :on => :unless_true_ping, :unless => :unless_true
+      emits_pfeeds :on => :if_false_ping, :if => :if_false, :for => :itself
+      emits_pfeeds :on => :unless_true_ping, :unless => :unless_true, :for => :itself
     end
     Emitter.new.if_false_ping
     Emitter.new.unless_true_ping
@@ -33,7 +35,7 @@ end
 context 'an emitter satisfying an if condition' do
   setup do
     Emitter.class_eval do
-      emits_pfeeds :on => :if_true_ping, :if => :if_true
+      emits_pfeeds :on => :if_true_ping, :if => :if_true, :for => :itself
     end
     returning(Emitter.create!(:name => 'bob')) do |e|
       e.if_true_ping
@@ -46,7 +48,7 @@ end
 context 'an emitter satisfying an unless condition' do
   setup do
     Emitter.class_eval do
-      emits_pfeeds :on => :unless_false_ping, :unless => :unless_false
+      emits_pfeeds :on => :unless_false_ping, :unless => :unless_false, :for => :itself
     end
     e = Emitter.create!
     e.unless_false_ping

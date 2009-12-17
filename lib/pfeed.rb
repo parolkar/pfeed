@@ -10,6 +10,10 @@ module ParolkarInnovationLab
                   
       def emits_pfeeds arg_hash # {:on => [] , :for => [:itself , :all_in_its_class], :identified_by => :name, :if => :passes_test?}
         arg_hash.assert_valid_keys(:on,:for,:if,:unless,:identified_by)
+        [:on, :for].each do |argument|
+          raise ArgumentError, "Expected an argument: #{argument}" if !arg_hash[argument]
+        end
+
         include ParolkarInnovationLab::SocialNet::InstanceMethods
  
         method_name_array = [*arg_hash[:on]]
