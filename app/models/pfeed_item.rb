@@ -29,10 +29,10 @@ class PfeedItem < ActiveRecord::Base
       temp_references[:participant] = args_supplied_to_method[0] if args_supplied_to_method &&  args_supplied_to_method.length >= 1 && args_supplied_to_method[0].class.superclass.to_s == "ActiveRecord::Base"
 
       pfeed_class_name = "#{ar_obj.class.to_s.underscore}_#{method_name_in_past_tense}".camelize # may be I could use .classify
-      contstructor_options = { :originator_id => temp_references[:originator].id , :originator_type => temp_references[:originator].class.to_s , :participant_id => (temp_references[:participant] ? temp_references[:participant].id : nil) , :participant_type => (temp_references[:participant] ? temp_references[:participant].class.to_s : nil) } # there is a reason why I didnt use {:originator => temp_references[:originator]} , if originator is new record it might get saved here un intentionally
+      constructor_options = { :originator_id => temp_references[:originator].id , :originator_type => temp_references[:originator].class.to_s , :participant_id => (temp_references[:participant] ? temp_references[:participant].id : nil) , :participant_type => (temp_references[:participant] ? temp_references[:participant].class.to_s : nil) } # there is a reason why I didnt use {:originator => temp_references[:originator]} , if originator is new record it might get saved here un intentionally
 
 
-      p_item = new_pfeed_item(pfeed_class_name, contstructor_options, temp_references)
+      p_item = new_pfeed_item(pfeed_class_name, constructor_options, temp_references)
       p_item.pack_data(method_name,method_name_in_past_tense,returned_result,*args_supplied_to_method,&block_supplied_to_method)
 
 
@@ -144,14 +144,14 @@ class PfeedItem < ActiveRecord::Base
 
   # look for custom pfeed class, with or withour Pfeed:: prefix
   CUSTOM_CLASSES = {}
-  def self.new_pfeed_item(pfeed_class_name, contstructor_options, temp_references)
+  def self.new_pfeed_item(pfeed_class_name, constructor_options, temp_references)
     if (klass = CUSTOM_CLASSES[pfeed_class_name]).nil?
       retried = false
       begin
         #puts "Attempting to create object of  #{pfeed_class_name} "
         klass = pfeed_class_name.constantize
         (CUSTOM_CLASSES[pfeed_class_name] = klass).new(
-          contstructor_options.merge(:temp_references => temp_references))
+          constructor_options.merge(:temp_references => temp_references))
       rescue NameError
         unless retried
           CUSTOM_CLASSES[pfeed_class_name] = false
@@ -159,13 +159,13 @@ class PfeedItem < ActiveRecord::Base
           pfeed_class_name = "Pfeeds::"+pfeed_class_name
           retry
         end
-        PfeedItem.new(contstructor_options) 
+        PfeedItem.new(constructor_options) 
       end   
     else
       if !klass
-        PfeedItem.new(contstructor_options) 
+        PfeedItem.new(constructor_options) 
       else
-        klass.new(contstructor_options) 
+        klass.new(constructor_options) 
       end
     end
   end
