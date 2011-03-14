@@ -26,7 +26,7 @@ class PfeedItem < ActiveRecord::Base
       temp_references = Hash.new
       temp_references[:originator] = ar_obj
       temp_references[:participant] = nil
-      temp_references[:participant] = args_supplied_to_method[0] if args_supplied_to_method &&  args_supplied_to_method.length >= 1 && args_supplied_to_method[0].class.superclass.to_s == "ActiveRecord::Base"
+      temp_references[:participant] = args_supplied_to_method[0] if args_supplied_to_method && args_supplied_to_method.length >= 1 && args_supplied_to_method[0].class < ActiveRecord::Base
 
       pfeed_class_name = "#{ar_obj.class.to_s.underscore}_#{method_name_in_past_tense}".camelize # may be I could use .classify
       constructor_options = { :originator_id => temp_references[:originator].id , :originator_type => temp_references[:originator].class.to_s , :participant_id => (temp_references[:participant] ? temp_references[:participant].id : nil) , :participant_type => (temp_references[:participant] ? temp_references[:participant].class.to_s : nil) } # there is a reason why I didnt use {:originator => temp_references[:originator]} , if originator is new record it might get saved here un intentionally
