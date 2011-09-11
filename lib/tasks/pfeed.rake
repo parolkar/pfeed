@@ -7,7 +7,7 @@ namespace :pfeed do
       
       if ! File.exists?("#{root}/vendor/plugins/inflectionist")
         puts "Inflectionist plugin is required by pfeed, while you dont seem to have it installed \n Attempting to install..."
-        system "#{root}/script/plugin install git://github.com/parolkar/inflectionist.git "
+        system "#{root}/script/rails plugin install git://github.com/parolkar/inflectionist.git "
       end
       
       raise '...something went wrong please install http://github.com/parolkar/inflectionist first!' if ! File.exists?("#{root}/vendor/plugins/inflectionist")
