@@ -37,7 +37,7 @@ context 'an emitter satisfying an if condition' do
     Emitter.class_eval do
       emits_pfeeds :on => :if_true_ping, :if => :if_true, :for => :itself
     end
-    returning(Emitter.create!(:name => 'bob')) do |e|
+    Emitter.create!(:name => 'bob').tap do |e|
       e.if_true_ping
     end
   end
