@@ -102,7 +102,7 @@ class PfeedItem < ActiveRecord::Base
   
   IDENTIFICATIONS = {}
   def guess_identification(ar_obj)
-    if identifier = ar_obj.respond_to?(:pfeed_options) && ar_obj.pfeed_options[:pfeed_identification]
+    if identifier = ar_obj.respond_to?(:pfeed_options) && ar_obj.pfeed_options[:identified_by]
       return ar_obj.send(identifier)
     end
 
