@@ -9,7 +9,7 @@ Lets assume you have a model that looks like
 
 <pre>
 <code>
- class User < ActiveRecord::Base
+ class User &lt; ActiveRecord::Base
    has_many :friends
    has_one  :company
    def buy(x)
@@ -51,24 +51,23 @@ And you perform regular operations, like this
 </code>
 </pre>
 your application now emits feed without any other additional piece of code, and feed will look like this in view. 
-<pre><code>
+<pre>
  parolkar sold item about 6 minutes ago
  parolkar bought item about 4 minutes ago
  foo found friends about 2 minutes ago
  foo updated attribute nick name about 2 minutes ago
  alice bought item about 2 minutes ago
-</code></pre>
+</pre>
 
-Isn't it magical? that it guesses the identity of model object (parolkar or foo in this case) and methods being called are treated as verbs to form a simple past tense.  
+ Isn't it magical? that it guesses the identity of model object (parolkar or foo in this case) and methods being called are treated as verbs to form a simple past tense.  
 
 Even more, each feed can be customized and skinned the way you want. You can easily extend the functionality to suit your requirements.  
 
-If all this excites you, check out the tutorials [here](http://wiki.github.com/parolkar/pfeed "pfeed's Wiki") or explore some more advanced techniques [here](http://wiki.github.com/parolkar/pfeed/customizing-the-pfeed-item "pfeed customisation techniques")            
-
+  If all this excites you, check out the tutorials [here](http://wiki.github.com/parolkar/pfeed "pfeed's Wiki") or explore some more advanced techniques [here](http://wiki.github.com/parolkar/pfeed/customizing-the-pfeed-item "pfeed customisation techniques")            
 
 ## Performance
 
-*How efficient is feed generation and delivery?* 
+ **How efficient is feed generation and delivery?** 
 
   If your app has mechanisms for asynchronous processing, like delayed_job , pfeed plugin will automatically figure out  how to schedule the delivery in the queue so that your request loop remains efficient and workers can perform deliveries. [Find out more](http://wiki.github.com/parolkar/pfeed/pfeed-delivery-as-background-job "pfeed delivery as background job")  
 
@@ -93,7 +92,7 @@ What if I give you a generalized information model which will allow you to creat
 ## Installation
 
 <pre>
-<code>	
+<code> 
  $ rails plugin install git://github.com/parolkar/pfeed.git # or use script/plugin for older version of rails
  $ rake pfeed:setup 
 </code>
