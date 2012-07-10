@@ -1,5 +1,4 @@
 #snippet: https://gist.github.com/89e92409ca9016d2d919
-
 module ParolkarInnovationLab
   module SocialNet
     def self.included(base)
@@ -17,12 +16,12 @@ module ParolkarInnovationLab
         include ParolkarInnovationLab::SocialNet::InstanceMethods
  
         method_name_array = [*arg_hash[:on]]
-        class_inheritable_hash :pfeed_audience_hash
+        class_attribute :pfeed_audience_hash
         
         method_name_array.each{|method_name| register_pfeed_audience(method_name,[*arg_hash[:for]].compact)  }
 
-        class_inheritable_hash :pfeed_options
-        write_inheritable_hash :pfeed_options, arg_hash.slice(:if,:unless,:identified_by)
+        class_attribute :pfeed_options
+        self.pfeed_options = arg_hash.slice(:if,:unless,:identified_by)
 
         
 
@@ -64,13 +63,12 @@ module ParolkarInnovationLab
       def receives_pfeed
         has_many :pfeed_deliveries , :as => :pfeed_receiver 
         has_many :pfeed_inbox, :class_name => 'PfeedItem', :foreign_key => "pfeed_item_id" , :through => :pfeed_deliveries , :source => :pfeed_item
-
-	write_inheritable_attribute(:is_pfeed_receiver,true)
-        class_inheritable_reader :is_pfeed_receiver
+        class_attribute :is_pfeed_receiver
+        self.is_pfeed_receiver = true
       end
     
       def register_pfeed_audience(method_name,audience_arr)
-         write_inheritable_hash(:pfeed_audience_hash, { method_name.to_sym => audience_arr }) # this does a merge
+         self.pfeed_audience_hash = { method_name.to_sym => audience_arr } # this does a merge
       end
     end
     
